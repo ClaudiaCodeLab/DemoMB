@@ -1,31 +1,192 @@
-# DemoMB
+# 📊 Campaign Performance Funnel  
+### Marketing Attribution & Product Adoption – Demo Project
 
-## Setup
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
-pip install pip-tools
-pip-compile requirements.in -o requirements.txt
-pip-compile requirements-dev.in -o requirements-dev.txt
-pip-sync requirements.txt requirements-dev.txt  # si tienes pip-tools (pip-sync)
-pre-commit install
-```
+---
 
-## Run (app/script)
-```bash
-python -m demomb
-```
+## 1. Objetivo del Proyecto
 
-## Test
-```bash
-pytest
-```
+Este proyecto tiene como objetivo ilustrar cómo estructurar un modelo de datos en entorno cloud para analizar el rendimiento del funnel de captación y adopción de productos en un contexto bancario retail.
 
-## Lint/Format
-```bash
-pre-commit run -a
-# o:
-ruff check . --fix
-ruff format .
-```
+Se analiza el recorrido desde la generación de leads de marketing hasta la contratación y aprobación de productos financieros, permitiendo responder preguntas clave como:
+
+- ¿Qué campañas generan más aperturas de cuenta?
+- ¿Qué canal convierte mejor?
+- ¿Cuál es la tasa de aprobación de préstamos e hipotecas?
+
+
+El enfoque está alineado con buenas prácticas de modelado analítico y principios de Data Governance en entornos financieros.
+
+---
+
+## 2. Alcance
+
+El proyecto incluye:
+
+- Generación de datos sintéticos (~20.000 clientes ficticios).
+- Modelado de una capa RAW y un DataMart en modelo estrella.
+- Construcción de KPIs de negocio.
+- Desarrollo de un dashboard interactivo conectado directamente al warehouse.
+
+No se utilizan datos reales ni de ninguna entidad financiera.
+
+---
+
+## 3. Arquitectura Implementada
+
+### Entorno Cloud
+- **GCP**
+- **BigQuery** como Data Warehouse analítico
+- **Looker Studio** para visualización
+
+### Flujo de Datos
+
+Python (fake data)
+↓
+BigQuery RAW Layer
+↓
+BigQuery DataMart (Modelo Estrella)
+↓
+Looker Studio Dashboard
+
+
+---
+
+## 4. Capa RAW (BigQuery)
+
+Dataset: `DemoMB.raw`
+
+Se han modelado tres dominios principales:
+
+### 1️⃣ Clientes
+Información básica del cliente:
+- Segmentación
+- Banda de edad
+- Residencia
+- Fecha de alta
+
+### 2️⃣ Interacciones de Marketing
+Registro de interacciones asociadas a campañas:
+- Impresiones
+- Clicks
+- Leads
+- Canal
+- Fuente
+
+Permite analizar rendimiento y atribución.
+
+### 3️⃣ Ciclo de Vida de Productos
+Eventos relacionados con:
+- Apertura de cuenta
+- Contratación de tarjeta
+- Solicitud y aprobación de préstamo
+- Solicitud y aprobación de hipoteca
+
+Permite modelar el funnel completo de conversión.
+
+---
+
+## 5. DataMart – Modelo Estrella
+
+Dataset: `DemoMB.mart`
+
+Se ha implementado un modelo estrella clásico con:
+
+### Dimensiones
+- Cliente
+- Campaña
+- Canal
+- Fecha
+- Producto
+
+### Tablas de hechos
+- Métricas agregadas diarias por campaña y canal
+- Funnel por cliente con primeras fechas por etapa
+
+Este diseño permite:
+- Reporting eficiente
+- Segmentación flexible
+- Métricas consistentes
+- Escalabilidad futura
+
+La atribución utilizada es **first-touch (primer lead registrado)**.
+
+---
+
+## 6. Dashboard
+
+🔗 **Dashboard Looker Studio:**  
+https://lookerstudio.google.com/s/ncLb_2_h3HU
+
+El dashboard incluye:
+
+### KPI Overview
+- Leads
+- Accounts Opened
+- Cards Opened
+- Loans Approved
+- Mortgages Approved
+
+### Conversion Metrics
+- Lead → Account Conversion Rate
+- Account → Card Adoption Rate
+- Loan Approval Rate
+- Mortgage Approval Rate
+
+### Análisis por dimensión
+- Performance por Campaign
+- Performance por Channel
+- Filtros interactivos (Campaign, Channel, Date Range)
+
+El dashboard está conectado directamente a BigQuery, sin exportaciones intermedias.
+
+---
+
+## 7. Entregables Incluidos en el Repositorio
+
+- Script Python de generación de datos sintéticos
+- Scripts SQL de creación de tablas RAW
+- Scripts SQL de construcción del DataMart
+- Modelo de datos documentado
+- README (este documento)
+- (Próximamente) TSD y Catálogo de Datos
+
+---
+
+## 8. Controles de Calidad Aplicados
+
+Se validó que:
+
+- No existen aprobaciones sin solicitud previa.
+- No existen tarjetas sin cuenta.
+- No existen conversiones superiores al 100%.
+- Las métricas del DataMart cuadran con la capa RAW.
+- Fechas coherentes en todas las etapas del funnel.
+
+---
+
+## 9. Decisiones de Diseño
+
+- BigQuery se utiliza como warehouse relacional analítico.
+- Separación clara entre RAW y MART.
+- Modelo estrella para facilitar consumo BI.
+- Métricas calculadas en capa analítica (no en la herramienta de BI).
+- Atribución basada en primer lead para simplificar análisis.
+
+---
+
+## 10. Posibles Evoluciones
+
+- Implementar cargas incrementales.
+- Añadir actividad digital (logins, uso de tarjeta, etc.).
+- Implementar atribución multi-touch.
+- Incorporar tests automáticos de calidad de datos.
+- Orquestación con Airflow / Cloud Composer.
+- Incorporar control de accesos y gobierno de datos.
+
+---
+
+## 11. Nota
+
+Todos los datos incluidos en este proyecto son completamente sintéticos y han sido generados exclusivamente con fines demostrativos.
+
+
