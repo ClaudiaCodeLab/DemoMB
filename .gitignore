@@ -27,3 +27,6 @@ requirements-dev.in
 requirements-dev.txt
 requirements.in
 .pre-commit-config.yaml
+documentation/Catalogo_Datos_Campaign_Performance_Funnel.docx
+documentation/TSD_Campaign_Performance_Funnel.docx
+documentation/~$D_Campaign_Performance_Funnel_v1_1.docx
