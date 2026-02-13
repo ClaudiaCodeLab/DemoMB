@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+
+# Tools caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Editors
+.vscode/*.log
+
+# Others
+Makefile
+pyproject.toml
+requirements-dev.in
+requirements-dev.txt
+requirements.in
+.pre-commit-config.yaml
